@@ -4,6 +4,20 @@
 
 MicroHydros is an IoT prototype that monitors a small growing environment (e.g. hydroponics). An ESP32-S3 sensor node reads internal air temperature/humidity (SHT31) and water and external air temperature (two DS18B20 probes), and publishes one raw MQTT telemetry message every 5 seconds. A Docker-based backend (Mosquitto, Node-RED, InfluxDB, Grafana) validates, stores and displays the measurements. See [`docs/architecture.md`](docs/architecture.md) for the full system design and [`docs/data-contract.md`](docs/data-contract.md) for the exact MQTT/JSON contract.
 
+## About this copy
+
+This is a personal copy of a team project built for the "IoT- och embeddedutvecklare" program at Jensen YH (project period 31 Aug – 25 Sep 2026), kept here for my own portfolio. The active, canonical repository — with the full team, ongoing issues and pull requests — is **[Samuel2Nugor/Hydrogreen](https://github.com/Samuel2Nugor/Hydrogreen)**. Every commit here still carries its original author, so this history shows the whole team's work, not only mine; see "My contribution" below for what I specifically did.
+
+## My contribution (Basit MN)
+
+The team was five people. By commit count I was the most active contributor (24 of 69 commits on `main`, roughly 1,950 lines added and 620 removed), close to [Samuel2Nugor](https://github.com/Samuel2Nugor) at 23. My work concentrated on three areas:
+
+* **ESP32-S3 firmware** ([`firmware/esp32s3/`](firmware/esp32s3/)) — the ESP-IDF application: Wi-Fi, MQTT client and the SHT31/DS18B20 sensor drivers, including ROM-address pinning so the two identical DS18B20 probes can share one 1-Wire bus without their readings silently swapping. Later split from a single `main.c` into separate Wi-Fi/MQTT/sensor modules in [PR #18](https://github.com/Samuel2Nugor/Hydrogreen/pull/18), in response to code-review feedback on [PR #16](https://github.com/Samuel2Nugor/Hydrogreen/pull/16).
+* **Backend deployment** — brought the whole Docker stack (Mosquitto, Node-RED, InfluxDB, Grafana) up on a shared Hetzner server for the team demo, including a port remap to coexist with another service on the same host, Node-RED authentication and automatic Grafana provisioning ([PR #16](https://github.com/Samuel2Nugor/Hydrogreen/pull/16)).
+* **Documentation and testing** — architecture, sensor/hardware justification, hardware and firmware READMEs, and the executed test results in [`docs/test-plan.md`](docs/test-plan.md).
+
+One concrete example: [issue #14](https://github.com/Samuel2Nugor/Hydrogreen/issues/14) — after the external sensor was renamed from `external_sht31` to `external_ds18b20` elsewhere in the codebase, the Node-RED validation flow still referenced the old name and silently rejected every outdoor-temperature reading. I found the root cause, wrote it up with a proposed fix and a verification step, and closed it with the corresponding commit.
+
 ## Repository structure
 
 | Path | Purpose |
